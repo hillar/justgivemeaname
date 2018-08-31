@@ -8,6 +8,9 @@ tar -xzf master.tar.gz
 mv justgivemeaname-master bestnameforyourserver
 cd bestnameforyourserver
 more README
+make install
+make dev
+open http://localhost:4242
 ```
 
 ----
