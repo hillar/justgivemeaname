@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "nodemon": "^1.18.4",
-    "rollup": "^0.65.0"
+    "rollup": "^0.65.0",
+    "tape": "^4.9.1"
   }
 }
