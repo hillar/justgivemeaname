@@ -9,6 +9,7 @@ exports `class Check`
 
 `Check` extends [`Base`](./base.md). On create new accepts optional `list` and `logger`.
 If `list` not given, `inList` returns default `false`. List can be *string* or *array*  of strings.
+Logs ALERT if nonempty list is set to **''**, as it effectively denies all.
 
 Settings:
 
