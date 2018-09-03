@@ -1,6 +1,6 @@
 
 # Class Base
-/dev/src/server/constants/logmethods.mjs
+
 see [source](../../../../src/server/classes/base/base.mjs)
 
 exports `class Base`

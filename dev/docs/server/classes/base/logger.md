@@ -1,7 +1,7 @@
 
-# logger.mjs
+# Class Logger
 
-see [source](../../src/server/classes/base/logger.mjs)
+see [source](../../../../src/server/classes/base/logger.mjs)
 
 exports `class Logger`
 
