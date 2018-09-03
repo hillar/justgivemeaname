@@ -1,10 +1,18 @@
 #!/bin/bash
 echo $(pwd)
 
-ls tests/server/*/*.tape.mjs| while read f; 
-do 
-node --experimental-modules ${f} &> /tmp/tape || echo "*** failed ${f} \n $(cat /tmp/tape)"
+ls tests/server/*/*.tape.mjs| while read f;
+do
+
+node --experimental-modules ${f} &> /tmp/tape 
 ok=$?
-echo "ok ${ok} "
+
+if [ ${ok} -eq 0 ]; then
+  echo "OK ${f} "
+else
+  echo "* * * failed ${f}"
+  echo "$(cat /tmp/tape)"
+  echo "* * * * * * * * *"
+fi
 
 done

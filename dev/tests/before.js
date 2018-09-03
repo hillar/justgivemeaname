@@ -11,7 +11,7 @@ for (const src of files) {
     fs.writeFileSync(test,`
 process.alias = 'test ${name}'
 import test from 'tape'
-import * as that from '../../../${src}' 
+import * as that from '../../../${src}'
 test('${name}', function (t) {
   //t.fail('no tests for ${name} source ${src}')
   t.deepEqual(that,'')
@@ -23,12 +23,13 @@ test('${name}', function (t) {
 }
 for (const src of files) {
   const doc = src.replace('src/','docs/').replace('.mjs','.md')
+  const name = src.split('/').pop()
   if (!fs.existsSync(doc)){
     console.error('no doc for', src)
     fs.writeFileSync(doc,`
-# ${src}
+# ${name}
 
-see ${src}
+see [source](../../${src})
     `)
   }
 }
