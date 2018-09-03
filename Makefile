@@ -4,17 +4,17 @@ prepare:
 
 init: prepare
 
-dev:
+devel:
 		 		cd dev ;\
-		 		nodemon --experimental-modules src/server/index.mjs
+		 		node_modules/nodemon/bin/nodemon.js --experimental-modules src/server/index.mjs
 
-serve: dev
+serve: devel
 
 test:
 				cd dev ;\
 				node tests/before.js; \
 				tests/test-server.bash
-	
+
 build:
 				cd dev ;\
 				rollup -c rollup.config.json
