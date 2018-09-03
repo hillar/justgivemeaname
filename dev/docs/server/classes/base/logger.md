@@ -33,6 +33,7 @@ output format:
 * ...messages
 
 `log.emerg({test:"emerg"},1234,'abc')`
+
 `2018-09-03T08:30:06.730Z localhost [ logger.tape.mjs : 32220 ] EMERG : {"test":"emerg"} 1234 abc`
 
 see
