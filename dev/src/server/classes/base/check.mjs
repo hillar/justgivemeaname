@@ -1,4 +1,4 @@
-import { trimArrayOfStrings } from '../../utils/var'
+import { trimArrayOfStrings, isString } from '../../utils/var'
 import { Base } from './base'
 
 export class Check extends Base {
@@ -37,13 +37,13 @@ export class Check extends Base {
 		//noop
 		if ( checklist === null || checklist === undefined ) return
 		//if not string or array, die
-		if ( ! ( Array.isArray( checklist ) || Object.prototype.toString.call( checklist ) === '[object String]' ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' checklist :: not string nor array ' + typeof checklist )
+		if ( ! ( Array.isArray( checklist ) || isString( checklist ) ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' checklist :: not string nor array ' + typeof checklist )
 		if ( checklist === '*' ) {
 
 			this.inList = ( memberOf ) => {
 
 				//if not string or array, die, even we allow all
-				if ( ! ( Array.isArray( memberOf ) || Object.prototype.toString.call( memberOf ) === '[object String]' ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' inList :: not string nor array ' + typeof memberOf )
+				if ( ! ( Array.isArray( memberOf ) || isString( memberOf ) ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' inList :: not string nor array ' + typeof memberOf )
 				return true
 
 			}
@@ -51,7 +51,7 @@ export class Check extends Base {
 			return
 
 		}
-		if ( Object.prototype.toString.call( checklist ) === '[object String]' ) checklist = [ checklist ]
+		if ( isString( checklist ) ) checklist = [ checklist ]
 		if ( Array.isArray( checklist ) ) checklist = trimArrayOfStrings( checklist )
 		else throw new Error( Object.getPrototypeOf( this ).constructor.name + ' :: checklist not array' + typeof checklist )
 		if ( Array.isArray( checklist ) && checklist.length > 0 ) {
@@ -60,7 +60,7 @@ export class Check extends Base {
 			this.inList = ( memberOf ) => {
 
 				//if not string or array, die
-				if ( ! ( Array.isArray( memberOf ) || Object.prototype.toString.call( memberOf ) === '[object String]' ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' :: not string nor array ' + typeof memberOf )
+				if ( ! ( Array.isArray( memberOf ) || isString( memberOf ) ) ) throw new Error( Object.getPrototypeOf( this ).constructor.name + ' :: not string nor array ' + typeof memberOf )
 				if ( ! Array.isArray( memberOf ) ) memberOf = [ memberOf ]
 				return this._list.some( ( v ) => {
 
