@@ -1,7 +1,8 @@
 
 # var utils
 
-see [source](../../../../src/server/utils/var.mjs)
+see [source](../../../src/server/utils/var.mjs)
 
-* trimArrayOfStrings (a) : trim strings, uniq & remove undefined
+* `trimArrayOfStrings (a)` : trim strings, uniq & remove undefined
+* `isString (s)` 
     
