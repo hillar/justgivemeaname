@@ -1,22 +1,4 @@
-// uniq & trim
-function zapArray(a) {
-
-    a = [...(new Set(a))] // uniq
-    let i = -1;
-    const length = a ? a.length : 0;
-    const result = [];
-    while (++i < length) {
-        const value = a[i];
-        if (value && value.trim().length > 0) {
-            result.push(value)
-        }
-    }
-
-    return result;
-
-}
-
-
+import { trimArrayOfStrings } from '../../utils/var'
 import { Base } from './base'
 
 export class User extends Base {
@@ -85,7 +67,7 @@ set  manager (manager) {
 
 set  emails (emails) {
 if (Object.prototype.toString.call(emails) === '[object String]') emails = [emails.trim()]
-if (Array.isArray(emails)) emails = zapArray(emails)
+if (Array.isArray(emails)) emails = trimArrayOfStrings(emails)
 else throw new Error(this.typeof + ' :: emails not a string nor array'+ typeof emails)
 if (Array.isArray(emails) && emails.length > 0) this._emails = emails
 else this.log_info({uid:this.uid,empty:'emails'})
@@ -94,7 +76,7 @@ else this.log_info({uid:this.uid,empty:'emails'})
 
 set  phones (phones) {
 if (Object.prototype.toString.call(phones) === '[object String]') phones = [phones.trim()]
-if (Array.isArray(phones)) phones = zapArray(phones)
+if (Array.isArray(phones)) phones = trimArrayOfStrings(phones)
 else throw new Error(this.typeof + ' :: phones not a string nor array'+ typeof phones)
 if (Array.isArray(phones) && phones.length > 0) this._phones = phones
 //else this.log_info({uid:this.uid,empty:'phones'})
@@ -103,7 +85,7 @@ if (Array.isArray(phones) && phones.length > 0) this._phones = phones
 
 set  roles (roles) {
 if (Object.prototype.toString.call(roles) === '[object String]') roles = [roles.trim()]
-if (Array.isArray(roles)) roles = zapArray(roles)
+if (Array.isArray(roles)) roles = trimArrayOfStrings(roles)
 else throw new Error(this.typeof + ' :: roles not a string nor array'+ typeof roles)
 if (Array.isArray(roles) && roles.length > 0) this._roles = roles
 else this.log_alert({uid:this.uid,empty:'roles'})
@@ -112,7 +94,7 @@ else this.log_alert({uid:this.uid,empty:'roles'})
 
 set  groups (groups) {
 if (Object.prototype.toString.call(groups) === '[object String]') groups = [groups.trim()]
-if (Array.isArray(groups)) groups = zapArray(groups)
+if (Array.isArray(groups)) groups = trimArrayOfStrings(groups)
 else throw new Error(this.typeof + ' :: groups not a string nor array'+ typeof groups)
 if (Array.isArray(groups) && groups.length > 0) this._groups = groups
 else this.log_alert({uid:this.uid,empty:'groups'})

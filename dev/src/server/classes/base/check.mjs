@@ -1,27 +1,4 @@
-
-// uniq & trim
-function zapArray( a ) {
-
-	a = [ ...( new Set( a ) ) ] // uniq
-	let i = - 1
-	const length = a ? a.length : 0
-	const result = []
-	while ( ++ i < length ) {
-
-		const value = a[ i ]
-
-		if ( value && value.trim().length > 0 ) {
-
-			result.push( value )
-
-		}
-
-	}
-
-	return result
-
-}
-
+import { trimArrayOfStrings } from '../../utils/var'
 import { Base } from './base'
 
 export class Check extends Base {
@@ -75,7 +52,7 @@ export class Check extends Base {
 
 		}
 		if ( Object.prototype.toString.call( checklist ) === '[object String]' ) checklist = [ checklist ]
-		if ( Array.isArray( checklist ) ) checklist = zapArray( checklist )
+		if ( Array.isArray( checklist ) ) checklist = trimArrayOfStrings( checklist )
 		else throw new Error( Object.getPrototypeOf( this ).constructor.name + ' :: checklist not array' + typeof checklist )
 		if ( Array.isArray( checklist ) && checklist.length > 0 ) {
 
