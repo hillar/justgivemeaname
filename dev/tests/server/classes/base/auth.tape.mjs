@@ -3,7 +3,7 @@ import test from 'tape'
 import { join } from 'path'
 import { unlinkSync as unlink, existsSync as exists } from 'fs'
 import { AuthBase } from '../../../../src/server/classes/base/auth.mjs'
-test('auth.mjs', function (t) {
+test('auth.mjs', async function (t) {
   //t.fail('no tests for auth.mjs source src/server/classes/base/auth.mjs')
   const a = new AuthBase()
   t.deepEqual(a.settings,[ 'cachetime', 'cachedir', 'cachefile' ],'settings')
@@ -20,6 +20,28 @@ test('auth.mjs', function (t) {
   t.deepEqual(a.cachefullname,join(process.cwd(),fn),'cachefullname')
   t.deepEqual(exists(a.cachefullname),true,'custom file exists')
   unlink(a.cachefullname)
+  let e
+  try {
+    await a.verify()
+  } catch (e) {
+    t.deepEqual(e.message,'AuthBase :: username not string  undefined','no username')
+  }
+  try {
+    await a.verify(1)
+  } catch (e) {
+    t.deepEqual(e.message,'AuthBase :: username not string  number','bad username')
+  }
+  try {
+    await a.verify('a')
+  } catch (e) {
+    t.deepEqual(e.message,'AuthBase :: password not string  undefined','no password')
+  }
+  try {
+    await a.verify('a',1)
+  } catch (e) {
+    t.deepEqual(e.message,'AuthBase :: password not string  number','bad username')
+  }
+  
   
   t.end()
 })
