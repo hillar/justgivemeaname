@@ -15,4 +15,10 @@ Logs ALERT if empty.
 Logs ERROR if `fn` and `ln` are empty.
 Logs INFO is `ssn` and `emails` are empty.  
 
+
+Functions:
+###### `toObj` 
+returns `id, roles, groups, ssn, fn, ln, ou ,manager ,emails ,phones`
+
+
 Function `createUser` needs object to create `User`, throws if not given
