@@ -1,14 +1,14 @@
 
 # Class AuthBase
 
-> verify username and password, get back user object. Caches verifications. 
+> verify username and password, get back user object. Caches verifications.
 
 see [source](../../../../src/server/classes/base/auth.mjs)
-    
+
 
 exports `class AuthBase`  
 
-`AuthBase` extends [`Base`](./base.md). On create new accepts optional `cachedir`, `cachefile`, `cachetime` and `logger`.
+`AuthBase` extends [`Base`](./base.md). On create new accepts optional `cachedir`, `cachefile`, `cachetime` and `logger`. Logs ...
 
 Settings:
 
@@ -18,4 +18,4 @@ Settings:
 
 Functions:
 
-* verify (username, password) returns [user object](./user.md#toobj) 
+* verify (username, password) returns [user object](./user.md#toobj)
