@@ -362,7 +362,7 @@ export class Server extends RolesAndGroups {
           //finally call method
           default:
           try {
-            await this.router[route]._methods[method].fn(log, user, req, res)
+            await this.router[route]._methods[method].fn(req, res, user, log)
           } catch (e) {
             this.log_emerg({RouteCatchError:{route,method,error:e.message}})
             console.error(e)

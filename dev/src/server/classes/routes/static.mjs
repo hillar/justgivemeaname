@@ -20,7 +20,7 @@ export class StaticRoute extends Route {
     this.root = root
     this.default = defaultfile
 
-    this.get = async (log, user, req, res) => {
+    this.get = async (req, res, user, log) => {
       const result = await new Promise( (resolve) => {
         let pe = parse(decodeURIComponent(req.url))
         // if dir is / then use default

@@ -181,7 +181,7 @@ export class Route extends RolesAndGroups {
         res.write = () => {}
         res.writeHead = () => {}
         res.end = () => {}
-        let logger = Object.assign(this._logger)
+        let logger = Object.assign(this.logger)
         for (const logmethod of LOGMETHODS){
           logger['log_' + logmethod] = (...messages) => {
             let msg = []

@@ -1,5 +1,5 @@
 import { createServer } from './classes/base/server'
-
+import { StaticRoute } from './classes/routes/static'
 const myserver = createServer({
 
   roles: '*',
@@ -15,13 +15,18 @@ const myserver = createServer({
     return getuserfromsomewhere
   },
   */
-  router:  { someroutenameasdas:  { get: (logger,user,req,res) => {
+  router:
+    { healtz:
+    { get: (req,res, user, logger) => {
+      console.dir('got logger',logger)
       logger.log_info({returning:user})
-      res.write('TEST '+JSON.stringify(user))
+      res.write('TEST '+JSON.stringify({health:'ok'}))
       }
-    }
+    },
+    'html': new StaticRoute(null,null,null,'./static'),
   }
 
 })
-
+myserver.router.default = 'healtz'
+myserver.router.html.route = 'html'
 myserver.listen()
