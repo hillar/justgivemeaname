@@ -8,7 +8,7 @@ import { RolesAndGroups } from './rolesandgroups'
 export class Route extends RolesAndGroups {
 
   constructor (logger, roles, groups, ...methods) {
-    super(logger,roles, groups)
+    super(roles, groups, logger)
     this._methods = {}
     for (const method of methods) {
       const name = Object.keys(method)[0]
@@ -70,7 +70,7 @@ export class Route extends RolesAndGroups {
     this._methods[name].check = new RolesAndGroups(roles, groups, this.logger)
     this._methods[name].fn = (req, res, user, logger) => {
       return new Promise(async (resolve) => {
-        if (this._methods[name].check.isinroles(user.roles) && this._methods[name].check.isingroups(user.groups)) {
+        if (this._methods[name].check.allowed(user.roles,user.groups)) {
             //this.log_info({route:this.route,method:name,user:user.uid,ip:ip(req)})
             // call the real method, can be async or normal func
             let mr = 'ok'

@@ -29,6 +29,8 @@ export class RolesAndGroups extends Base {
   set groups (groups) { this._groups.list = groups }
   isingroups (t) {return this._groups.inList(t)}
 
-  allowed (r = '', g = '') { return (this.isinroles(r) && this.isingroups(g)) }
+  allowed (r = '', g = '') { 
+    return (this.isinroles(r) && this.isingroups(g))
+  }
 
 }
