@@ -207,7 +207,7 @@ export class AuthFreeIPA extends AuthBase {
     ru.roles = []
     ru.groups = []
     for (const memberof of ru.memberOf) {
-      if (memberof.endsWith(this.base)) {
+      if (memberof.endsWith('cn=accounts,'+this.base)) {
         const tmp = memberof.split(',')
         const what = tmp[1]
         switch (tmp[1].split('=')[1]) {
