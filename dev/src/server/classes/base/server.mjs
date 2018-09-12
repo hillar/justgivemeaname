@@ -11,7 +11,7 @@ import { LOGMETHODS } from '../../constants/logmethods'
 import { Route } from './route'
 import { Router } from './router'
 import { AuthBase } from './auth'
-import { default as cliParams } from 'commander'
+import { Command } from '../vendor/commander'
 
 // TODO move to fileutils or smoething
 
@@ -35,7 +35,7 @@ const getFiles = (source) => readdirSync(source).map(name => join(source,name)).
 const PORT = 4444
 const IP = '127.0.0.1'
 
-export class Server extends RolesAndGroups {
+export class HTTPServer extends RolesAndGroups {
   constructor (auth, router, config, roles, groups, logger ) {
     super(roles, groups, logger)
 
@@ -103,6 +103,7 @@ export class Server extends RolesAndGroups {
       }
     }
 
+    const cliParams = new Command()
     cliParams
       .version('0.0.1')
       .usage('[options]')
@@ -534,5 +535,5 @@ import {AuthFreeIPA as Identity} from '../auth/freeipa'
 export function createServer(options) {
   if (!options) throw new Error('no options')
   if (!options.auth) options.auth = new Identity(options.logger)
-  return new Server(options.auth,options.router,options.config,options.roles,options.groups,options.logger)
+  return new HTTPServer(options.auth,options.router,options.config,options.roles,options.groups,options.logger)
 }

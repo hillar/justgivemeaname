@@ -17,4 +17,4 @@ test:
 
 build:
 				cd dev ;\
-				rollup -c rollup.config.json
+				rollup -c rollup.config.js

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -s $(cat last) > /tmp/orig
+diff /tmp/orig index.orig.js

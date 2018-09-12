@@ -2,10 +2,13 @@
   "devDependencies": {
     "nodemon": "^1.18.4",
     "rollup": "^0.65.0",
+    "rollup-plugin-cjs-es": "^0.6.0",
+    "rollup-plugin-cleanup": "^3.0.0",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "tape": "^4.9.1"
   },
   "dependencies": {
-    "commander": "^2.18.0",
     "ldapjs": "^1.0.2"
   }
 }

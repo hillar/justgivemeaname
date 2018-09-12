@@ -1,3 +1,4 @@
+.*
 /prod/*
 /dev/local/*
 /dev/package-lock.json
