@@ -1,4 +1,6 @@
-import * as ldap  from 'ldapjs'
+import { default as Client } from '../vendor/ldapjs/lib/client/client.js'
+console.log(Client)
+
 import { AuthBase } from '../base/auth'
 import { User } from '../base/user'
 
@@ -11,7 +13,7 @@ function fetch_ldap(url,dn,password,base,filter,attributes = [],sizeLimit = SIZE
   const results = []
   return new Promise((resolve, reject) => {
     try {
-    const client = ldap.default.createClient({
+    const client = new Client({
       url: url,
       tlsOptions: {rejectUnauthorized: rejectUnauthorized}
     })
@@ -56,7 +58,7 @@ function fetch_ldap(url,dn,password,base,filter,attributes = [],sizeLimit = SIZE
       }
     })
     } catch (e) {
-      client.unbind()
+      //client.unbind()
       reject(e)
     }
   })
