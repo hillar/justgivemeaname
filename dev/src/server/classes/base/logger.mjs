@@ -36,7 +36,7 @@ export class Logger {
 
 			let pe = parse( process.argv[ 1 ] )
 			process.alias = pe.base === 'index.js' ? pe.dir.split( '/' ).pop() : pe.base
-
+			if (process.alias === 'bin') process.alias = pe.dir.split( '/' )[pe.dir.split( '/' ).length-2]
 		}
 		// TODO rfc5424 6.3.  STRUCTURED-DATA
 		for ( const method of SEVERITYLOG ) {

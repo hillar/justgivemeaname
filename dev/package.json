@@ -9,6 +9,5 @@
     "tape": "^4.9.1"
   },
   "dependencies": {
-    "ldapjs": "^1.0.2"
   }
 }

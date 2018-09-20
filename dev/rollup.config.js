@@ -5,9 +5,9 @@ import cjs from "rollup-plugin-cjs-es";
 
 export default [{
   //input: 'src/server/index.mjs',
-  input: 'local/test.mjs',
+  input: 'src/server/index.mjs',
   output: {
-    file: 'prod/index.mjs',
+    file: '../prod/index.mjs',
     format: 'es'
   },
   plugins: [
@@ -16,13 +16,13 @@ export default [{
       jsnext: true,
       main: true
     }),
-    /*
+
     commonjs({
       extensions: [ '.js' ],
       sourceMap: false,
 
     }),
-
+    /*
     cjs({
       nested: true
     }),
