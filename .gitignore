@@ -1,5 +1,9 @@
 .*
+/vue/*
+/static/*
 /prod/*
+/dev/vue/*
+/dev/static/*
 /dev/local/*
 /dev/package-lock.json
 # Logs
