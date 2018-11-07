@@ -4,6 +4,7 @@ sample Proxy
 
 */
 
+import { parse, join } from 'path'
 import { request } from 'http'
 import { Route } from '../base/route'
 
@@ -15,44 +16,48 @@ export class ProxyRoute extends Route {
     this.host = host
     this.port = port
     this.path = path
-    
+
     this.onRequest = async (req, res, user, log) => {
       const result = await new Promise( (resolve) => {
         req.pause()
+        let pe = parse(decodeURIComponent(req.url))
+        pe.dir = pe.dir.replace('/'+this.path,'/')
+        const url = join(pe.dir, pe.base)
+        log.log_info({proxy:{url, host:this.host}})
         const options = {
           hostname: this.host,
           port: this.port,
-          path: req.url,
+          path: url,
           method: req.method
         }
         const proxy = request(options, function (r) {
-          r.on('error', (e) => { 
+          r.on('error', (e) => {
             log.log_info({r:e})
             console.error(e)
             resolve(true)
           })
           if (r.statusCode != 200) {
-            log.log_err({proxyerror:{status:r.statusCode,host:options.hostname}}) 
+            log.log_err({proxyerror:{status:r.statusCode,host:options.hostname}})
             res.writeHead(500)
             res.end()
             resolve(true)
           }
           else r.pipe(res)
         })
-        proxy.on('error', (e) => { 
+        proxy.on('error', (e) => {
           log.log_info({proxy:e})
           console.error(e)
           resolve(true)
-        })    
-        res.on('error', (e) => { 
+        })
+        res.on('error', (e) => {
           log.log_info({res:e})
           console.error(e)
           resolve(true)
         })
-        res.on('finish', (e) => { 
+        res.on('finish', (e) => {
           resolve(true)
         })
-        req.on('error', (e) => { 
+        req.on('error', (e) => {
           log.log_info({req:e})
           console.error(e)
           resolve(true)
@@ -62,7 +67,7 @@ export class ProxyRoute extends Route {
       })
       return result
     }
-  
+    
     this.get = this.onRequest
     this.post = this.onRequest
 
@@ -74,10 +79,9 @@ export class ProxyRoute extends Route {
   set port (port) { this._port = port}
   get path () { return this._path }
   set path (path) { this._path = path}
-  
+
   async ping () {
     const result = await new Promise((resolve)=>{
-      
       const options = {
         hostname: this.host,
         port: this.port,
@@ -85,17 +89,17 @@ export class ProxyRoute extends Route {
         method: 'GET'
       }
       const proxy = request(options, function (r) {
-        r.on('error', (e) => { 
+        r.on('error', (e) => {
           log.log_info({r:e})
           console.error(e)
           resolve(false)
         })
       })
-      proxy.on('error', (e) => { 
+      proxy.on('error', (e) => {
         this.logger.warning({proxy:{error:e, options}})
         resolve(false)
-      }) 
-      proxy.on('finish', (e) => { 
+      })
+      proxy.on('finish', (e) => {
         this.logger.info({proxy:options})
         resolve(true)
       })
