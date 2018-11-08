@@ -1,5 +1,6 @@
 import { createServer } from './classes/base/server'
 import { StaticRoute } from './classes/routes/static'
+import { ProxyRoute } from './classes/routes/proxy'
 const myserver = createServer({
 
   roles: '*',
@@ -24,6 +25,7 @@ const myserver = createServer({
       }
     },
     'html': new StaticRoute(null,null,null,'./static'),
+    'proxy': new ProxyRoute(null,null,null,'api.hackertarget.com',80,'proxy'),
   }
 
 })
