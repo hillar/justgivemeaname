@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-  const apiUrl = '/proxy/reverseiplookup/?q='
+  const apiUrl = '/hackertarget/reverseiplookup/?q='
   export default {
     name: 'app',
     data() {

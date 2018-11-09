@@ -1,6 +1,6 @@
 import { createServer } from './classes/base/server'
-import { StaticRoute } from './classes/routes/static'
-import { ProxyRoute } from './classes/routes/proxy'
+import { createStaticRoute } from './classes/routes/static'
+import { createProxyRoute } from './classes/routes/proxy'
 const myserver = createServer({
 
   roles: '*',
@@ -18,16 +18,14 @@ const myserver = createServer({
   */
   router:
     { user:
-    { get: async (req,res, user, logger) => {
-      logger.log_info({returning:user})
-      res.write(JSON.stringify(user))
-      }
-    },
-    'dist': new StaticRoute(null,null,null,'./static'),
-
-    'proxy': new ProxyRoute(null,null,null,'api.hackertarget.com',80,'proxy'),
-  }
-
+      { get: async (req,res, user, logger) => {
+          logger.log_info({returning:user})
+          res.write(JSON.stringify(user))
+        }
+      },
+      'dist': createStaticRoute({ root:'./static' }),
+      'hackertarget': createProxyRoute({ host:'api.hackertarget.com', port:80 }),
+    }
 })
 //myserver.router.default = 'healtz'
 //myserver.router.html.route = 'html'

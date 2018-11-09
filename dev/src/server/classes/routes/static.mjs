@@ -91,3 +91,8 @@ export class StaticRoute extends Route {
   }
 
 }
+
+export function createStaticRoute(options) {
+  if (!options) throw new Error('no options')
+  return new StaticRoute(options.logger, options.roles, options.groups, options.root, options.defaultfile)
+}

@@ -10,7 +10,7 @@ import { Route } from '../base/route'
 
 export class ProxyRoute extends Route {
 
-  constructor (logger, roles, groups, host, port, path) {
+  constructor (logger, roles, groups, host, port) {
 
     super(logger, roles, groups)
     this.host = host
@@ -114,4 +114,9 @@ export class ProxyRoute extends Route {
     return result
   }
 
+}
+
+export function createProxyRoute(options) {
+  if (!options) throw new Error('no options')
+  return new ProxyRoute(options.logger, options.roles, options.groups, options.host, options.port)
 }
