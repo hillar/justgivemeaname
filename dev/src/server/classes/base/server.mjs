@@ -70,10 +70,18 @@ export class HTTPServer extends RolesAndGroups {
     if (router instanceof Router) {
       this.router = router
     } else {
-      const rr = new Router(this._logger,this.roles, this.groups)
+      let routes = []
+      for (const name of Object.keys(router)){
+        console.log('server',name,router[name])
+        router[name].route = name
+        routes.push(router[name])
+      }
+      const rr = new Router(this._logger,this.roles, this.groups, ...routes)
+      /*
       for (const name of Object.keys(router)){
         rr[name] = router[name]
       }
+      */
       this.router = rr
     }
     this.port = PORT

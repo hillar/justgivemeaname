@@ -17,7 +17,7 @@ const myserver = createServer({
   },
   */
   router:
-    { healtz:
+    { /*healtz:
     { get: (req,res, user, logger) => {
       console.dir('got logger',logger)
       logger.log_info({returning:user})
@@ -25,10 +25,11 @@ const myserver = createServer({
       }
     },
     'html': new StaticRoute(null,null,null,'./static'),
+    */
     'proxy': new ProxyRoute(null,null,null,'api.hackertarget.com',80,'proxy'),
   }
 
 })
-myserver.router.default = 'healtz'
-myserver.router.html.route = 'html'
+//myserver.router.default = 'healtz'
+//myserver.router.html.route = 'html'
 myserver.listen()

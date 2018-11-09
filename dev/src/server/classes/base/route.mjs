@@ -27,7 +27,13 @@ export class Route extends RolesAndGroups {
       configurable: true,
       writable: true
     })
+    Object.defineProperty(this, 'route', {
+      enumerable: true,
+      configurable: true,
+      writable: true
+    })
   }
+
 
   set html (html) {this._html = html}
   get html () { return this._html}

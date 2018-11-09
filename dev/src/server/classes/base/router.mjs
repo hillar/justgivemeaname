@@ -24,17 +24,32 @@ export class Router extends RolesAndGroups {
     this.htmlroot = './src/html/routes'
 
     for (const route of routes) {
+      console.log('route',route)
       const name = Object.keys(route).shift()
       if (name) {
         if (route[name] instanceof Route){
+          console.log('blaa', name, route[name])
           this[name] = route[name]
           this[name].route = name
           if (route[name].html && !route[name].htmlroot ) this[name].htmlroot = join(this.htmlroot,name)
           if (!route[name].roles) route[name].roles = this.roles
           if (!route[name].groups) route[name].groups = this.groups
+
         } else {
-          const r = new Route(this.logger,this.roles,this.groups)
-          r.route = route
+          let methods = []
+          for (const method of Object.keys(route[name])){
+            methods.push(route[name][method])
+            /*
+            r.setMethod(method,route[name][method])
+            if (this.htmlroot)  {
+              r.htmlroot = this.htmlroot
+              r.html = true
+            }
+            */
+          }
+          const r = new Route(this.logger,this.roles,this.groups, ...methods)
+          r.route = name
+          /*
           for (const method of Object.keys(route[name])){
             r.setMethod(method,route[name][method])
             if (this.htmlroot)  {
@@ -42,6 +57,7 @@ export class Router extends RolesAndGroups {
               r.html = true
             }
           }
+          */
           this[name] = r
         }
       }
