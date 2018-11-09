@@ -1,3 +1,6 @@
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('Base')
+
 import { ROUTEMETHODS } from '../../constants/routemethods'
 import { LOGMETHODS } from '../../constants/logmethods'
 import { Logger } from './logger'
@@ -12,7 +15,7 @@ const __ignore_settings___ = [
 export class Base {
 
 	constructor( logger ) {
-
+    debug('constructor',this.typeof)
 		if ( ! logger ) this.logger = new Logger()
 		else this.logger = logger
 
@@ -130,7 +133,7 @@ export class Base {
 		}
 
 	}
-  
+
   /*
 	ping() {
 

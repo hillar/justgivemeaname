@@ -1,9 +1,10 @@
-//const Base = require('./base')
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('Server')
 
 import { writeFileSync, readFile, readFileSync, realpathSync, lstatSync, readdirSync  } from 'fs'
 import { join } from 'path'
 import { createServer as createHttpServer } from 'http'
-import { creatorName, objectType } from '../../utils/var'
+import { is, creatorName, objectType } from '../../utils/var'
 import { ip } from '../../utils/req'
 import { RolesAndGroups } from './rolesandgroups'
 import { ROUTEMETHODS as METHODS } from '../../constants/routemethods'
@@ -69,12 +70,16 @@ export class HTTPServer extends RolesAndGroups {
     if (!router) throw new Error('no router')
     if (router instanceof Router) {
       this.router = router
+      //this._logger,this.roles, this.groups
     } else {
       let routes = []
+      debug('preparing ...routes')
       for (const name of Object.keys(router)){
-        console.log('server',name,router[name])
+        debug(name,'=',is(router[name]))
         router[name].route = name
-        routes.push(router[name])
+        const tmp = {}
+        tmp[name] = router[name]
+        routes.push(tmp)
       }
       const rr = new Router(this._logger,this.roles, this.groups, ...routes)
       /*
@@ -87,6 +92,7 @@ export class HTTPServer extends RolesAndGroups {
     this.port = PORT
     this.ip = IP
     // check if is route
+
     for (const route of this.router.routes){
       /*
       if (!this.router[route].settings){
@@ -99,7 +105,7 @@ export class HTTPServer extends RolesAndGroups {
         this.router[route] = r
       }
       */
-
+      /*
       if (!(this.router[route] instanceof Route)) {
         const r = new Route(this._logger)
         r.route = route
@@ -109,6 +115,7 @@ export class HTTPServer extends RolesAndGroups {
         }
         this.router[route] = r
       }
+      */
     }
 
     const cliParams = new Command()
@@ -240,7 +247,7 @@ export class HTTPServer extends RolesAndGroups {
       .then( () => {
         for (const route of this.router.routes){
           for (const method of this.router[route].methods) {
-              console.log(route,',',method,',',this.router[route]._methods[method].check.roles,',',this.router[route]._methods[method].check.groups)
+              debug(route,',',method,',',this.router[route]._methods[method].check.roles,',',this.router[route]._methods[method].check.groups)
             }
         }
         process.exit(0)

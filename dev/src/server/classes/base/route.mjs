@@ -1,5 +1,8 @@
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('Route')
 
 import { IncomingMessage } from 'http'
+import { is, creatorName, objectType } from '../../utils/var'
 import { ROUTEMETHODS as METHODS } from '../../constants/routemethods'
 import { LOGMETHODS }  from '../../constants/logmethods'
 import  { ip } from '../../utils/req'
@@ -13,9 +16,9 @@ export class Route extends RolesAndGroups {
     for (const method of methods) {
       const name = Object.keys(method)[0]
       if (name) {
-        //console.log('method name',name, method[name])
         this.setMethod(name,method[name])
       } else throw new Error('not a method')
+      debug('method:',name,is(method[name]))
     }
     Object.defineProperty(this, '_html', {
       enumerable: false,
@@ -28,7 +31,7 @@ export class Route extends RolesAndGroups {
       writable: true
     })
     Object.defineProperty(this, 'route', {
-      enumerable: true,
+      enumerable: false,
       configurable: true,
       writable: true
     })

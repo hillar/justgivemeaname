@@ -1,3 +1,7 @@
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('Router')
+
+import { is, isFn, creatorName, objectType } from '../../utils/var'
 import  { realpathSync, access, constants }  from 'fs'
 import { join } from 'path'
 import { RolesAndGroups }  from './rolesandgroups'
@@ -22,13 +26,13 @@ export class Router extends RolesAndGroups {
     })
 
     this.htmlroot = './src/html/routes'
-
+    debug('looping routes')
     for (const route of routes) {
-      console.log('route',route)
       const name = Object.keys(route).shift()
+      debug(name,is(route))
       if (name) {
         if (route[name] instanceof Route){
-          console.log('blaa', name, route[name])
+          debug('got Route', name, is(route[name]))
           this[name] = route[name]
           this[name].route = name
           if (route[name].html && !route[name].htmlroot ) this[name].htmlroot = join(this.htmlroot,name)
@@ -36,28 +40,17 @@ export class Router extends RolesAndGroups {
           if (!route[name].groups) route[name].groups = this.groups
 
         } else {
+          debug('creating Route', name, is(route[name]))
           let methods = []
           for (const method of Object.keys(route[name])){
-            methods.push(route[name][method])
-            /*
-            r.setMethod(method,route[name][method])
-            if (this.htmlroot)  {
-              r.htmlroot = this.htmlroot
-              r.html = true
+            if (isFn(route[name][method])) {
+              const tmp = {}
+              tmp[method] = route[name][method]
+              methods.push(tmp)
             }
-            */
           }
           const r = new Route(this.logger,this.roles,this.groups, ...methods)
           r.route = name
-          /*
-          for (const method of Object.keys(route[name])){
-            r.setMethod(method,route[name][method])
-            if (this.htmlroot)  {
-              r.htmlroot = this.htmlroot
-              r.html = true
-            }
-          }
-          */
           this[name] = r
         }
       }

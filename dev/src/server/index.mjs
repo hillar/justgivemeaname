@@ -17,15 +17,14 @@ const myserver = createServer({
   },
   */
   router:
-    { /*healtz:
-    { get: (req,res, user, logger) => {
-      console.dir('got logger',logger)
+    { user:
+    { get: async (req,res, user, logger) => {
       logger.log_info({returning:user})
-      res.write('TEST '+JSON.stringify({health:'ok'}))
+      res.write(JSON.stringify(user))
       }
     },
-    'html': new StaticRoute(null,null,null,'./static'),
-    */
+    'dist': new StaticRoute(null,null,null,'./static'),
+
     'proxy': new ProxyRoute(null,null,null,'api.hackertarget.com',80,'proxy'),
   }
 
