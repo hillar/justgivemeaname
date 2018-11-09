@@ -11,10 +11,10 @@
       <hr>
       </form>
       <ul>
-        <li v-for="error in errors">{{ error }}</li>
+        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
       <ul>
-        <li v-for="line in lines">{{ line }}</li>
+        <li v-for="line in lines" v-bind:key="line">{{ line }}</li>
       </ul>
   </div>
 </template>

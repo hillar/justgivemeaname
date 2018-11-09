@@ -1,5 +1,5 @@
 module.exports = {
-  outputDir: '../../../static',
+  outputDir: '../../../../static',
   devServer: {
     proxy: {
       '/hackertarget' : {

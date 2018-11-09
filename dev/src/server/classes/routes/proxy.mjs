@@ -3,6 +3,8 @@
 sample Proxy
 
 */
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('ProxyRoute')
 
 import { parse, join } from 'path'
 import { request } from 'http'
@@ -15,19 +17,14 @@ export class ProxyRoute extends Route {
     super(logger, roles, groups)
     this.host = host
     this.port = port
-    //this.path = path
 
-    this.get =   async (req, res, user, log) => {
-        const that = this
-        console.log('maja',this)
+    this.get =  this.post = async (req, res, user, log) => {
         const result = await new Promise( (resolve) => {
           req.pause()
-          let self = that.path ? that.route : that.path
           let pe = parse(decodeURIComponent(req.url))
-          pe.dir = pe.dir.replace('/'+this.path,'/')
+          pe.dir = pe.dir.replace('/'+this.route,'/')
           const url = join(pe.dir, pe.base)
-          console.log('kala',self,this.route,this.path)
-          log.log_info({proxy:{url, host:this.host}})
+          log.log_info({proxy:{method:req.method,host:this.host, port:this.port, url}})
           const options = {
             hostname: this.host,
             port: this.port,
@@ -72,19 +69,12 @@ export class ProxyRoute extends Route {
         return result
       }
 
-
-    //this.get = this.onRequest
-    //this.post = this.onRequest
-
-
   }
 
   get host () { return this._host }
   set host (host) { this._host = host}
   get port () { return this._port }
   set port (port) { this._port = port}
-  //get path () { return this._path }
-  //set path (path) { this._path = path}
 
   async ping () {
     const result = await new Promise((resolve)=>{
