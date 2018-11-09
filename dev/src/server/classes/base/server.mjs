@@ -69,8 +69,9 @@ export class HTTPServer extends RolesAndGroups {
     */
     if (!router) throw new Error('no router')
     if (router instanceof Router) {
+      if (!router.roles) router.roles = this.roles
+      if (!router.groups) router.groups = this.groups
       this.router = router
-      //this._logger,this.roles, this.groups
     } else {
       let routes = []
       debug('preparing ...routes')
@@ -82,41 +83,10 @@ export class HTTPServer extends RolesAndGroups {
         routes.push(tmp)
       }
       const rr = new Router(this._logger,this.roles, this.groups, ...routes)
-      /*
-      for (const name of Object.keys(router)){
-        rr[name] = router[name]
-      }
-      */
       this.router = rr
     }
     this.port = PORT
     this.ip = IP
-    // check if is route
-
-    for (const route of this.router.routes){
-      /*
-      if (!this.router[route].settings){
-        const r = new Route(this._logger)
-        r.route = route
-        for (const name of Object.keys(this.router[route])){
-          //if (!METHODS.includes(name)) throw new Error('method name not allowed: ' + name)
-          r.setMethod(name,this.router[route][name])
-        }
-        this.router[route] = r
-      }
-      */
-      /*
-      if (!(this.router[route] instanceof Route)) {
-        const r = new Route(this._logger)
-        r.route = route
-        for (const name of Object.keys(this.router[route])){
-          //if (!METHODS.includes(name)) throw new Error('method name not allowed: ' + name)
-          r.setMethod(name,this.router[route][name])
-        }
-        this.router[route] = r
-      }
-      */
-    }
 
     const cliParams = new Command()
     cliParams
