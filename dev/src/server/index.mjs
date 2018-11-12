@@ -24,7 +24,7 @@ const myserver = createServer({
         }
       },
       dist: createStaticRoute({ root:'./static' }),
-      hackertarget: createProxyRoute({ host:'api.hackertarget.com', port:80 }),
+      'hackertarget': createProxyRoute({ host:'api.hackertarget.com', port:80 }),
     }
 })
 myserver.router.default = 'dist'

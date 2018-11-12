@@ -226,9 +226,6 @@ export class HTTPServer extends RolesAndGroups {
     // here comes a http server ---------------------------------------------------
     this._server = createHttpServer( async (req, res) => {
 
-      const method = req.method.toLowerCase()
-      const route = decodeURIComponent(req.url).split('/')[1].toLowerCase().trim()
-
       const b64auth = (req.headers.authorization || '').split(' ')[1] || ''
       const strauth = new Buffer.from(b64auth, 'base64').toString()
       const splitIndex = strauth.indexOf(':')
@@ -252,12 +249,12 @@ export class HTTPServer extends RolesAndGroups {
           return
         }
         if (user.message === 'no auth backend') {
-          this.log_emerg({AuthError:user.message,route,method,user:username,ip:ip(req)})
+          this.log_emerg({AuthError:user.message,user:username,ip:ip(req)})
           res.writeHead(503)
           res.end()
           return
         }
-        this.log_notice({AuthError:user.message,error:user,route,method,user:username,ip:ip(req)})
+        this.log_notice({AuthError:user.message,error:user,user:username,ip:ip(req)})
         res.writeHead(404)
         res.end()
         return
@@ -271,8 +268,12 @@ export class HTTPServer extends RolesAndGroups {
         return
       }
 
+      const method = req.method.toLowerCase()
+      let route = decodeURIComponent(req.url.slice(1)).split('/').shift().toLowerCase().trim()
+      const params = decodeURIComponent(req.url).split('/').pop().trim()
+      // params without route
+      if (route === params && route !== '') route = '/'
       if (!route  && this.router.default) {
-        // 'http://'+this.ip+':'+this.port+'/'+route+'/'+
         res.writeHead(301, {"Location": '/'+this.router.default+'/', "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0"});
         res.end();
         return
@@ -303,14 +304,8 @@ export class HTTPServer extends RolesAndGroups {
           }
         }
         // do we have some params
-        let params = decodeURIComponent(req.url).split('/')
-
-        params.shift()
-        params.shift()
-        params = params.join('/').trim()
-
+        let params = decodeURIComponent(req.url).split('/').pop().trim()
         if (params.length === 0 && this.router[route].html) {
-          // 'http://'+this.ip+':'+this.port+'/'+route+'/'+
           res.writeHead(301, {"Location": '/'+route+'/'+route+'.html', "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0"});
           res.end();
           return

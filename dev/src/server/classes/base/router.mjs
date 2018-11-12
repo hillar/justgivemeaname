@@ -29,15 +29,14 @@ export class Router extends RolesAndGroups {
     debug('looping routes')
     for (const route of routes) {
       const name = Object.keys(route).shift()
-      debug(name,is(route))
       if (name) {
         if (route[name] instanceof Route){
           debug('got Route', name, is(route[name]))
-          this[name] = route[name]
-          this[name].route = name
           if (route[name].html && !route[name].htmlroot ) this[name].htmlroot = join(this.htmlroot,name)
           if (!route[name].roles) route[name].roles = this.roles
           if (!route[name].groups) route[name].groups = this.groups
+          this[name] = route[name]
+          this[name].route = name
 
         } else {
           debug('creating Route', name, is(route[name]))
