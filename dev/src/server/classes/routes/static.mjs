@@ -28,7 +28,7 @@ export class StaticRoute extends Route {
         // chop route from req path
         pe.dir = pe.dir.replace('/'+this.route,'')
 
-        const filename = join(this.path, pe.dir, pe.base)
+        const filename = join(this.path, pe.dir, pe.base.split('?').shift())
         readFile(filename, (err,content) => {
           if (err) {
             log.log_warning({notexists:filename})
