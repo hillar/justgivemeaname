@@ -6,9 +6,10 @@ const myserver = createServer({
   roles: '*',
 
   groups: '*',
-  /*
+
   // by default freeipa is used as Identity server
   // or just write your own simple function
+  /*
   auth: async (username,password) => {
     const getuserfromsomewhere = await new Promise((resolve,reject) => {
       resolve({uid:username,roles:[],groups:[]})
@@ -16,6 +17,12 @@ const myserver = createServer({
     return getuserfromsomewhere
   },
   */
+  auth: {
+    server:'ipa.demo1.freeipa.org',
+    base:'dc=demo1,dc=freeipa,dc=org',
+    binduser: 'manager',
+    bindpass: 'Secret123'
+  },
   router:
     { user:
       { get: async (req,res, user, logger) => {
@@ -24,7 +31,7 @@ const myserver = createServer({
         }
       },
       dist: createStaticRoute({ root:'./static' }),
-      'hackertarget': createProxyRoute({ host:'api.hackertarget.com', port:80 }),
+      hackertarget: createProxyRoute({ host:'api.hackertarget.com', port:80 })
     }
 })
 myserver.router.default = 'dist'
