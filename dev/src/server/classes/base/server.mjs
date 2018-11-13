@@ -13,6 +13,7 @@ import { Route } from './route'
 import { Router } from './router'
 import { AuthBase } from './auth'
 import { Command } from '../vendor/commander'
+import { createAuthFreeIPA as createIdentity, AuthFreeIPA as Identity} from '../auth/freeipa'
 
 // TODO move to fileutils or smoething
 
@@ -41,11 +42,13 @@ export class HTTPServer extends RolesAndGroups {
     super(roles, groups, logger)
 
     if (!auth) throw new Error('no auth')
+    debug('got auth', is(auth))
     if (auth instanceof AuthBase) {
       this.auth = auth
     } else {
       // TODO allow normal function
       if (objectType(auth) === '[object AsyncFunction]'){
+        debug('creating new auth from function')
         const a = new AuthBase(this.logger)
         a.reallyVerify = auth
         a.ping = async () => {
@@ -54,20 +57,16 @@ export class HTTPServer extends RolesAndGroups {
         }
         this.auth = a
       } else {
-        throw new Error('auth must be AsyncFunction or instance of AuthBase')
+        if (auth.server && (auth.base || auth.binduser || auth.bindpass)) {
+          debug('creatring auth with createIdentity',auth)
+          if (!auth.logger) auth.logger = this.logger
+          this.auth = createIdentity(auth)
+        } else throw new Error('auth must be AsyncFunction or instance of AuthBase')
       }
     }
-    /*
-    if (router && router.settings) this.router = router
-    else {
-      const rr = new Router(this._logger,this.roles, this.groups)
-      for (const name of Object.keys(router)){
-        rr[name] = router[name]
-      }
-      this.router = rr
-    }
-    */
+
     if (!router) throw new Error('no router')
+    debug('got router',is(router))
     if (router instanceof Router) {
       if (!router.roles) router.roles = this.roles
       if (!router.groups) router.groups = this.groups
@@ -270,7 +269,8 @@ export class HTTPServer extends RolesAndGroups {
 
       const method = req.method.toLowerCase()
       let route = decodeURIComponent(req.url.slice(1)).split('/').shift().toLowerCase().trim()
-      const params = decodeURIComponent(req.url).split('/').pop().trim()
+      let params = decodeURIComponent(req.url).split('/').pop().toLowerCase().trim()
+      debug('in',method, route, params)
       // params without route
       if (route === params && route !== '') route = '/'
       if (!route  && this.router.default) {
@@ -278,6 +278,7 @@ export class HTTPServer extends RolesAndGroups {
         res.end();
         return
       }
+      debug('modified',method, route,params)
 
       if (this.router[route] && this.router[route]._methods[method] && this.router[route]._methods[method].fn) {
         // set logger ctx to: route, method, user, ip
@@ -289,7 +290,7 @@ export class HTTPServer extends RolesAndGroups {
         for (const logmethod of LOGMETHODS){
           log['log_' + logmethod] = (...messages) => {
             let msg = []
-            let ctx = {user:user.uid,ip:ip(req)}
+            let ctx = {method,route,user:user.uid,ip:ip(req)}
             for (const m of messages) {
               if (m instanceof Object) {
                 ctx = Object.assign(ctx,m)
@@ -299,8 +300,9 @@ export class HTTPServer extends RolesAndGroups {
             const tmp = {}
             tmp[route] = {}
             tmp[route][method] = ctx
-            log[logmethod]({Route:tmp})
-            //log[logmethod]({Route:{route,method,user:user.uid,ip:ip(req)}})
+            //log[logmethod]({Route:tmp})
+            //log[logmethod]({route,method,user:user.uid,ip:ip(req),messages})
+            log[logmethod](ctx)
           }
         }
         // do we have some params
@@ -326,6 +328,7 @@ export class HTTPServer extends RolesAndGroups {
             }
           })
         })
+
         switch (params) {
 
           case route+'.html':
@@ -510,7 +513,7 @@ export class HTTPServer extends RolesAndGroups {
 
 }
 
-import {AuthFreeIPA as Identity} from '../auth/freeipa'
+
 
 export function createServer(options) {
   if (!options) throw new Error('no options')
