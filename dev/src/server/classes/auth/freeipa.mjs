@@ -247,3 +247,8 @@ export class AuthFreeIPA extends AuthBase {
     return user
   }
 }
+
+export function createAuthFreeIPA(options) {
+  if (!options) throw new Error('no options')
+  return new AuthFreeIPA(options.server, options.base, options.binduser, options.bindpass, options.field, options.rejectUnauthorized, options.directory,options.filename, options.time, options.logger)
+}
