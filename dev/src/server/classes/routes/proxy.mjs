@@ -20,38 +20,49 @@ export class ProxyRoute extends Route {
 
     this.get =  this.post = async (req, res, user, log) => {
         const result = await new Promise( (resolve) => {
+
           req.pause()
+
           let pe = parse(req.url)
           pe.dir = pe.dir.replace('/'+this.route,'/')
           const url = join(pe.dir, pe.base)
           log.log_info({proxy:{method:req.method,host:this.host, port:this.port, url}})
+
+          const  headers = {}
+          if (req.method === 'POST') {
+            const cpheaders = ['content-length', 'connection', 'content-type','expect']
+            for (const h of cpheaders) {
+              if (req.headers[h]) {
+                headers[h] = req.headers[h]
+              }
+            }
+          }
           const options = {
             hostname: this.host,
             port: this.port,
             path: url,
             method: req.method,
-            headers: req.headers
+            headers: headers
           }
+
           const proxy = request(options, function (r) {
             r.on('error', (e) => {
               log.log_info({r:e})
               console.error(e)
               resolve(true)
             })
-            //r.on('data', (c) => {debug('r',c.toString())})
+            r.on('data', (c) => {debug('r',c.toString())})
             if (r.statusCode != 200) {
               log.log_err({proxyerror:{status:r.statusCode,host:options.hostname}})
               res.writeHead(500)
               res.end()
               resolve(true)
-            }
-            else  {
+            } else  {
               for (const h of Object.keys(r.headers)) {
                 res.setHeader(h,r.headers[h])
                 if ( h === 'content-disposition' ) {
                   log.log_info({proxy:{downloaded:r.headers[h].split('=').pop(), method:req.method,host:this.host, port:this.port, url}})
                 }
-                //debug(h,' -- ',r.headers[h])
               }
               r.pipe(res)
             }
@@ -100,7 +111,6 @@ export class ProxyRoute extends Route {
         })
         return result
       }
-
   }
 
   get host () { return this._host }
