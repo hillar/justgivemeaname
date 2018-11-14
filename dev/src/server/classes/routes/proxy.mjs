@@ -28,7 +28,7 @@ export class ProxyRoute extends Route {
           const url = join(pe.dir, pe.base)
           log.log_info({proxy:{method:req.method,host:this.host, port:this.port, url}})
 
-          const  headers = {}
+          const headers = {}
           if (req.method === 'POST') {
             const cpheaders = ['content-length', 'connection', 'content-type','expect']
             for (const h of cpheaders) {
@@ -37,6 +37,7 @@ export class ProxyRoute extends Route {
               }
             }
           }
+
           const options = {
             hostname: this.host,
             port: this.port,
@@ -49,6 +50,8 @@ export class ProxyRoute extends Route {
             r.on('error', (e) => {
               log.log_info({r:e})
               console.error(e)
+              res.writeHead(500)
+              res.end()
               resolve(true)
             })
             r.on('data', (c) => {debug('r',c.toString())})
@@ -70,20 +73,27 @@ export class ProxyRoute extends Route {
           proxy.on('error', (e) => {
             log.log_info({proxy:e})
             console.error(e)
+            res.writeHead(500)
+            res.end()
             resolve(true)
           })
           res.on('error', (e) => {
             log.log_info({res:e})
             console.error(e)
+            res.writeHead(500)
+            res.end()
             resolve(true)
           })
           res.on('finish', (e) => {
             resolve(true)
           })
+
           //res.on('data', (c) => {debug('res',c.toString())})
           req.on('error', (e) => {
             log.log_info({req:e})
             console.error(e)
+            res.writeHead(500)
+            res.end()
             resolve(true)
           })
 
@@ -106,8 +116,10 @@ export class ProxyRoute extends Route {
               }
             })
           }
-          req.pipe(proxy)
+
+          if (proxy) req.pipe(proxy)
           req.resume()
+
         })
         return result
       }
