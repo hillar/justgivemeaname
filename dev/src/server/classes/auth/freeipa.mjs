@@ -1,5 +1,4 @@
 import { default as Client } from '../vendor/ldapjs/lib/client/client.js'
-console.log(Client)
 
 import { AuthBase } from '../base/auth'
 import { User } from '../base/user'
@@ -9,7 +8,7 @@ const PROTO = 'ldap'
 const PORT = 389
 
 function fetch_ldap(url,dn,password,base,filter,attributes = [],sizeLimit = SIZELIMIT,rejectUnauthorized) {
-  //console.log(url,dn,password,base,filter,attributes,sizeLimit)
+  //debug(url,dn,password,base,filter,attributes,sizeLimit)
   const results = []
   return new Promise((resolve, reject) => {
     try {
@@ -151,13 +150,13 @@ export class AuthFreeIPA extends AuthBase {
         }
         // something went very wrong ;(
         this.log_emerg({BindError1:u})
-        console.error(u)
+        debug(u)
         return u
       }
     } catch (e) {
       // something went very wrong ;(
       this.log_emerg({CatchBindError:e})
-      console.error(e)
+      debug(e)
       return e
     }
     if (!(u.length === 1)) {
@@ -190,13 +189,13 @@ export class AuthFreeIPA extends AuthBase {
         }
         // something went very wrong ;(
         this.log_emerg({BindError:ru,e:ru.message})
-        console.error(ru)
+        debug(ru)
         return ru
       }
     } catch (e) {
       // something went very wrong ;(
       this.log_emerg({CatchBindError:e})
-      console.error(e)
+      debug(e)
       return e
     }
     if (!(ru.length === 1)) {

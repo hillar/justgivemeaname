@@ -10,7 +10,7 @@ devel:
 
 demo:
 				cd dev ;\
-				node_modules/nodemon/bin/nodemon.js --experimental-modules src/server/index.mjs --auth-server=ipa.demo1.freeipa.org --auth-base=dc=demo1,dc=freeipa,dc=org --auth-binduser=admin --auth-bindpass=Secret123
+				node_modules/nodemon/bin/nodemon.js --no-warnings --experimental-modules src/server/index.mjs --auth-server=ipa.demo1.freeipa.org --auth-base=dc=demo1,dc=freeipa,dc=org --auth-binduser=admin --auth-bindpass=Secret123
 
 serve: devel
 

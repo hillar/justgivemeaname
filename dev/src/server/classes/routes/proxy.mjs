@@ -49,7 +49,7 @@ export class ProxyRoute extends Route {
           const proxy = request(options, function (r) {
             r.on('error', (e) => {
               log.log_info({r:e})
-              console.error(e)
+              debug(e)
               res.writeHead(500)
               res.end()
               resolve(true)
@@ -72,14 +72,14 @@ export class ProxyRoute extends Route {
           })
           proxy.on('error', (e) => {
             log.log_info({proxy:e})
-            console.error(e)
+            debug(e)
             res.writeHead(500)
             res.end()
             resolve(true)
           })
           res.on('error', (e) => {
             log.log_info({res:e})
-            console.error(e)
+            debug(e)
             res.writeHead(500)
             res.end()
             resolve(true)
@@ -91,7 +91,7 @@ export class ProxyRoute extends Route {
           //res.on('data', (c) => {debug('res',c.toString())})
           req.on('error', (e) => {
             log.log_info({req:e})
-            console.error(e)
+            debug(e)
             res.writeHead(500)
             res.end()
             resolve(true)
@@ -141,7 +141,7 @@ export class ProxyRoute extends Route {
       const proxy = request(options, function (r) {
         r.on('error', (e) => {
           log.log_info({r:e})
-          console.error(e)
+          debug(e)
           resolve(false)
         })
       })
@@ -151,6 +151,7 @@ export class ProxyRoute extends Route {
       })
       proxy.on('finish', (e) => {
         this.logger.info({proxy:options})
+        debug(e)
         resolve(true)
       })
       proxy.end()

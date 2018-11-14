@@ -128,7 +128,7 @@ export class HTTPServer extends RolesAndGroups {
     try {
       if (this._configFile) {
         conf = JSON.parse(readFileSync(this._configFile,"utf8"))
-        console.dir('conf',conf,CONFIG)
+        debug('conf',conf,CONFIG)
       }
     } catch (e) {
       this.log_info({Config:configFile,error:e.message})
@@ -158,12 +158,12 @@ export class HTTPServer extends RolesAndGroups {
 
     // just dump conf
     if (cliParams.dumpConfig) {
-      console.log('/* config dump  */\nmodule.exports = ',JSON.stringify(this.config,null,'\t'))
+      process.stdout.write(['/* config dump  */\nmodule.exports = ',JSON.stringify(this.config,null,'\t'),'\n'].join('\n'))
       process.exit(0)
     }
     // dump conf with undefined as nulls
     if (cliParams.dumpConfigUndefined) {
-      console.log('/* config dump  with undefined as nulls */\nmodule.exports = ',JSON.stringify(this.config,function(k, v) { if (v === undefined) { return null; } return v; },'\t'))
+      process.stdout.write(['/* config dump  with undefined as nulls */\nmodule.exports = ',JSON.stringify(this.config,function(k, v) { if (v === undefined) { return null; } return v; },'\t'),'\n'].join('\n'))
       process.exit(0)
     }
     // create dummy html
@@ -216,7 +216,7 @@ export class HTTPServer extends RolesAndGroups {
       .then( () => {
         for (const route of this.router.routes){
           for (const method of this.router[route].methods) {
-              debug(route,',',method,',',this.router[route]._methods[method].check.roles,',',this.router[route]._methods[method].check.groups)
+              process.stdout.write([route,method,this.router[route]._methods[method].check.roles,this.router[route]._methods[method].check.groups].join('\t')+'\n')
             }
         }
         process.exit(0)
@@ -349,7 +349,7 @@ export class HTTPServer extends RolesAndGroups {
             await this.router[route]._methods[method].fn(req, res, user, log)
           } catch (e) {
             this.log_emerg({RouteCatchError:{route,method,error:e.message}})
-            console.error(e)
+            debug(e)
             res.writeHead(503)
             res.end()
           }
@@ -464,11 +464,11 @@ export class HTTPServer extends RolesAndGroups {
         // do we have html & js for routes
         /* TODO ...
         if (this.router.root) {
-          console.log('checking',this.router.root)
+          debug('checking',this.router.root)
           for (const d of getDirectories(this.router.root)) {
-              console.log('found route',d)
+              debug('found route',d)
               for (const f of getFiles(join(this.router.root,d))) {
-                console.log('found file',d, f)
+                debug('found file',d, f)
               }
           }
         }
@@ -483,7 +483,7 @@ export class HTTPServer extends RolesAndGroups {
       .catch((error)=>{
         // die because there is something wrong with permissions
         this.log_emerg({BrokenPermisions:error})
-        console.error(new Error(JSON.stringify({BrokenPermisions:error})))
+        debug(new Error(JSON.stringify({BrokenPermisions:error})))
         process.exit(1)
       })
   }

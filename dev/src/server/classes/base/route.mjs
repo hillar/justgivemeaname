@@ -90,7 +90,7 @@ export class Route extends RolesAndGroups {
                   fn(req, res, user, logger)
                 } catch (e) {
                   this.log_emerg({route:this.route,method:name,kind,error:e.message})
-                  console.log(e)
+                  debug(e)
                   fr = 'FUNCTION ERROR '+ e.message
                 }
                 resolve(fr)
@@ -100,7 +100,7 @@ export class Route extends RolesAndGroups {
                 await fn(req, res, user, logger)
               } catch (e) {
                 this.log_emerg({route:this.route,method:name,kind,error:e.message})
-                console.log(e)
+                debug(e)
                 mr = 'ASYNC ERROR '+ e.message
               }
             }
@@ -210,7 +210,7 @@ export class Route extends RolesAndGroups {
           if (!(r === 'ok')) result = false
         } catch (e) {
           this.log_emerg({ping:'failed',note:'default',route,method,error:e.message})
-          console.log(e)
+          debug(e)
           result = false
         }
       }

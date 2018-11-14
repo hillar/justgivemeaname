@@ -1,3 +1,6 @@
+import  { default as createDebug }  from 'debug'
+const debug = createDebug('AuthBase')
+
 import { existsSync, accessSync, readFileSync, constants, writeFileSync  } from 'fs'
 import { join } from 'path'
 import { isString } from '../../utils/var'
@@ -18,28 +21,28 @@ export class AuthBase extends Base {
         writable: true,
         value: {}
       } )
-      
+
       Object.defineProperty( this, '_cachetime', {
         enumerable: false,
         configurable: false,
         writable: true,
         value: cachetime
       } )
-      
+
       Object.defineProperty( this, 'filecache', {
         enumerable: false,
         configurable: false,
         writable: true,
         value: true
       } )
-      
+
       Object.defineProperty( this, '_cachedir', {
         enumerable: false,
         configurable: false,
         writable: true,
         value: directory
       } )
-      
+
       Object.defineProperty( this, '_cachefile', {
         enumerable: false,
         configurable: false,
@@ -51,9 +54,9 @@ export class AuthBase extends Base {
 
   get cachetime () { return this._cachetime }
   set cachetime (ms) { if (!isNaN(ms)) this._cachetime = ms }
-  
+
   get cachefullname () { if (this.filecache) return join(this.cachedir,this.cachefile) }
-  
+
   get cachedir () {return this._cachedir}
   set cachedir (cd) {
     if (!(isString(cd))) throw new Error(this.typeof + ' :: directory not string  ' + typeof cd)
@@ -124,7 +127,7 @@ export class AuthBase extends Base {
                     user  = await this.reallyVerify(username,password)
                   } catch (e){
                     this.log_emerg({reallyVerify:e.message})
-                    console.error(e)
+                    debug(e)
                     resolve(e)
                     return
                     //throw e
@@ -149,7 +152,7 @@ export class AuthBase extends Base {
   }
 
   async reallyVerify (username,password) {
-    //console.log('real verify',username,password,Object.getPrototypeOf(this).constructor.name)
+    //debug('real verify',username,password,Object.getPrototypeOf(this).constructor.name)
     if (!(Object.getPrototypeOf(this).constructor.name === 'AuthBase')) throw new Error('reallyVerify not implemented')
     //uid,ssn, fn,ln,ou,manager,emails,phones,roles,groups
     const user = new User(this._logger,'dummy','1234567','firstname','lastname','org unit','manager','','','','')
@@ -167,7 +170,7 @@ export class AuthBase extends Base {
         let u
         try {
           u = JSON.parse(readFileSync(this.cachefullname))
-          //console.log('u',u)
+          //debug('u',u)
         } catch (e) {
           this.log_err(e)
           return {}
@@ -189,15 +192,3 @@ export class AuthBase extends Base {
   }
 
 }
-
-/*
-process.alias = 'test AuthBase'
-let L = require('./logger')
-let l = new L()
-
-let A = require('./authbase')
-let a = new A(l)
-console.log(a.setters)
-let u = [...Array(10)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
-a.verify('abc',u)
-*/
