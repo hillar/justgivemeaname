@@ -33,7 +33,7 @@ export default {
       browser: true,
       main: true
     }),
-    serve({contentBase:'html',proxy:{'/hackertarget':'http://localhost:4444/hackertarget'}}),
+    serve({contentBase:'html',proxy:{'/':'http://localhost:4444/'}}),
     livereload('html')
   ]
 }

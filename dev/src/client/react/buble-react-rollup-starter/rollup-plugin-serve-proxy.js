@@ -1,7 +1,9 @@
 import { readFile } from 'fs'
 import { createServer as createHttpsServer } from 'https'
 import { createServer, request as fetch } from 'http'
+import httpProxy from  'http-proxy'
 import { resolve } from 'path'
+
 
 import mime from 'mime'
 import opener from 'opener'
@@ -67,18 +69,31 @@ export default function serve_proxy (options = { contentBase: '' }) {
         }
         if (isproxy) {
           const url = request.url.replace(isproxy,options.proxy[isproxy])
-          console.log(green(request.url),'->',url)
-          /*
-          const opt = {
-            method: request.method,
-            headers: request.headers
-          }
-          */
-          const proxy = fetch(url, function (r) {
-            //r.on('data', (c) => {console.log('r',c.toString())})
-            r.pipe(response)
-          })
-          request.pipe(proxy)
+          console.log(green(request.url),'-(',request.method,')->',url)
+          const proxy = httpProxy.createProxyServer({})
+          request.url = url
+          // echo proxy response
+          proxy.on('proxyRes', function (proxyRes, req, res) {
+              var body = new Buffer('');
+              proxyRes.on('data', function (data) {
+                  body = Buffer.concat([body, data]);
+              });
+              proxyRes.on('end', function () {
+                  body = body.toString();
+                  console.log(green("res from proxied server:"),'\n'+body+'\n');
+              });
+          });
+
+          proxy.web(request, response, { target: options.proxy[isproxy] }, function(e) {
+            console.log(red('proxy req error:'))
+            console.error(e)
+            response.writeHead(500)
+            response.end('' +
+              '\n\n' + JSON.stringify(options.proxy) +
+              '\n\n' + e +
+              '\n\n(rollup-plugin-serve)', 'utf-8')
+          });
+
         } else {
           notFound(response, filePath)
         }
@@ -154,7 +169,13 @@ function found (response, filePath, content) {
 }
 
 function green (text) {
+  // FgGreen = "\x1b[32m"
   return '\u001b[1m\u001b[32m' + text + '\u001b[39m\u001b[22m'
+}
+
+function red (text) {
+  // FgRed = "\x1b[31m"
+  return '\u001b[1m\u001b[31m' + text + '\u001b[39m\u001b[22m'
 }
 
 function closeServerOnTermination (server) {
